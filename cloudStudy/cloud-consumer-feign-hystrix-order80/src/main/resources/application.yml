@@ -10,4 +10,4 @@ eureka:
 
 feign:
   hystrix:
-    enabled: true
+    enabled: true #在Feign中开启Hystrix
