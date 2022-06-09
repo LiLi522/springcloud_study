@@ -19,4 +19,9 @@ public class RateLimitController {
     public CommonResult handleException(BlockException exception) {
         return new CommonResult(444, exception.getClass().getCanonicalName() + "\t 服务不可用");
     }
+
+    @GetMapping(value = "/rateLimit/byUrl")
+    public CommonResult byUrl() {
+        return new CommonResult(200, "按Url限流测试OK", new Payment(2022L, "serial2023"));
+    }
 }
