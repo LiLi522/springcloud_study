@@ -5,6 +5,8 @@ import com.xx.springcloud.domain.Order;
 import com.xx.springcloud.service.AccountService;
 import com.xx.springcloud.service.OrderService;
 import com.xx.springcloud.service.StorageService;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,9 @@ public class OrderServiceImpl implements OrderService {
      * 下订单->减库存->减余额->改状态
      * **/
     @Override
+    @GlobalTransactional(name = "fsp-create-order", rollbackFor = Exception.class )
     public void create(Order order) {
+        log.info("====Seata全局事务Id========》" + RootContext.getXID() +  " ====");
         log.info("----->开始新建订单");
         //step1：新建订单
         orderDao.create(order);
@@ -41,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("----->订单微服务开始调用账户，做扣减");
         //step3：扣减账户
+        log.info("====Seata全局事务Id========》" + RootContext.getXID() +  " ====");
         accountService.decrease(order.getUserId(), order.getMoney());
         log.info("----->订单微服务开始调用账户，做扣减End");
 
